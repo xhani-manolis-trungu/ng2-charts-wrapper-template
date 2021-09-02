@@ -1,2 +1,6 @@
-<!-- <chart-wrapper [data]="[12,13,54,2]" [labels]="['Jan', 'Feb', 'Mar', 'Apr']"></chart-wrapper> -->
-<chart-wrapper [data]="[12,13,54,2]" [labels]="['Jan', 'Feb', 'Mar', 'Apr']" [chartType]="'bar'"></chart-wrapper>
+<chart-wrapper 
+[data]="[[12,13,54,2], [15,64,65,66]]" 
+[labels]="['Jan', 'Feb', 'Mar', 'Apr']" 
+[chartType]="'bar'" 
+[datasetLabels]="['Dataset 1', 'Dataset 2']">
+</chart-wrapper>

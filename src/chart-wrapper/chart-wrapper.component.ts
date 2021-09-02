@@ -13,7 +13,7 @@ export class ChartWrapperComponent {
   private labels: Array<string> = [];
   private type: string = 'bar';
   private DSLabels: string | string[] = null;
-  
+
   @Input('datasetLabels') set dataSetLabelsInput(DSLabels: string | string[]) {
     // Way 1 of checking if object is array
     // if (Object.prototype.toString.call(DSLabels) === '[object Array]') {
@@ -51,6 +51,10 @@ export class ChartWrapperComponent {
     this.barChartType = this.type;
     this.barChartLabels = [...this.labels];
     this.barChartData[0]['data'] = [...this.data];
+  }
+
+  utilTypeChecking(object) {
+    return Object.prototype.toString.call([]); 
   }
 
   createBarChartData(data: Array<any>) {

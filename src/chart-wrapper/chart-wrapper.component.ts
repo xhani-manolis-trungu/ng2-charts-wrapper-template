@@ -1,7 +1,21 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
-import { ChartDataService } from '../services/chart-data.service';
+
+const getDates = (startDate, endDate) => {
+  const dates = [];
+  let currentDate = startDate;
+  const addDays = function(days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+  while (currentDate <= endDate) {
+    dates.push(currentDate);
+    currentDate = addDays.call(currentDate, 1);
+  }
+  return dates;
+};
 
 @Component({
   selector: 'chart-wrapper',
@@ -13,6 +27,7 @@ export class ChartWrapperComponent {
   private labels: Array<string> = [];
   private type: string = 'bar';
   private DSLabels: string | string[] = null;
+  private options: ChartOptions = {};
 
   @Input('datasetLabels') set dataSetLabelsInput(DSLabels: string | string[]) {
     // Way 1 of checking if object is array
@@ -35,9 +50,11 @@ export class ChartWrapperComponent {
     this.type = type;
   }
 
-  public barChartOptions: ChartOptions = {
-    responsive: true
-  };
+  @Input('chartOptions') set chartOptionsInput(options: ChartOptions) {
+    this.options = { ...options };
+  }
+
+  public barChartOptions: ChartOptions;
   public barChartLabels: Label[] = [];
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
@@ -48,24 +65,25 @@ export class ChartWrapperComponent {
   constructor() {}
 
   ngOnInit() {
+    this.barChartOptions = { ...this.options };
     this.barChartType = this.type;
     this.barChartLabels = [...this.labels];
-    this.barChartData[0]['data'] = [...this.data];
   }
 
-  utilTypeChecking(object) {
-    return Object.prototype.toString.call([]); 
+  checkTypeCondition(data: Array<any>) {
+    return data.every(item => Array.isArray(item) && (typeof item !== 'number') || Array.isArray(item) && (typeof item !== 'string'))
   }
 
   createBarChartData(data: Array<any>) {
-    if (data.every(item => Array.isArray(item))) {
+    if (this.checkTypeCondition(data)) {
       data.forEach((item, idx) => {
         if (idx < data.length - 1) {
-          this.barChartData.push({ data: [], label: '' });
-          this.data = item;
+          if (this.barChartData.length !== data.length) {
+            this.barChartData.push({ data: [], label: '' });
+          }
         }
-
-        this.barChartData[idx]['data'] = item;
+        this.data = [...item];
+        this.barChartData[idx]['data'] = [...this.data];
       });
     } else {
       this.data = data;

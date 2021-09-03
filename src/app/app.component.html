@@ -1,6 +1,19 @@
-<chart-wrapper 
-[data]="[[12,13,54,2], [15,64,65,66]]" 
-[labels]="['Jan', 'Feb', 'Mar', 'Apr']" 
-[chartType]="'bar'" 
-[datasetLabels]="['Dataset 1', 'Dataset 2']">
+<!-- With 2 datasets -->
+<chart-wrapper [data]="[[12,13,54,2], [15,64,65,66]]" [labels]="['Jan', 'Feb', 'Mar', 'Apr']" [chartType]="'bar'"
+  [datasetLabels]="['Dataset 1', 'Dataset 2']">
+</chart-wrapper>
+
+<!-- With 1 dataset -->
+<chart-wrapper [data]="[12,13,54,2]" [labels]="['Jan', 'Feb', 'Mar', 'Apr']" [chartType]="'bar'"
+  [datasetLabels]="'Dataset 1'">
+</chart-wrapper>
+
+<!-- No data provided -->
+<chart-wrapper [data]="[]" [labels]="[]" [chartType]="'bar'" [datasetLabels]="'Default'">
+</chart-wrapper>
+
+<!-- With 1 dataset with timestamps for labels -->
+<chart-wrapper [data]="[12,13,54,2, 85, 45, 31]"
+  [labels]="['2017-10-01T00:00:00.000Z', '2017-10-02T00:00:00.000Z', '2017-10-03T00:00:00.000Z', '2017-10-04T00:00:00.000Z', '2017-10-05T00:00:00.000Z', '2017-10-06T00:00:00.000Z', '2017-10-07T00:00:00.000Z']"
+  [chartType]="'bar'" [datasetLabels]="'Dataset 1'" [chartOptions]="chartOptions">
 </chart-wrapper>

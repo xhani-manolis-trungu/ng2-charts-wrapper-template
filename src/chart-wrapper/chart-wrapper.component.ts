@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ChartOptions, ChartType, ChartDataSets, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
+import generateGradient from '../utils/generateRandomGradient';
 
 const getDates = (startDate, endDate) => {
   const dates = [];
@@ -29,7 +30,7 @@ export class ChartWrapperComponent {
   private DSLabels: string | string[] = null;
   private options: ChartOptions = null;
 
-  @ViewChild("myCanvas") canvas: ElementRef;
+  @ViewChild('myCanvas') canvas: ElementRef;
 
   @Input('datasetLabels') set dataSetLabelsInput(DSLabels: string | string[]) {
     // Way 1 of checking if object is array
@@ -101,15 +102,23 @@ export class ChartWrapperComponent {
 
   ngAfterViewInit() {
     const domCanvasAccess = this.canvas.nativeElement as HTMLCanvasElement;
-    const gradientColor = domCanvasAccess.getContext('2d').createLinearGradient(0, 0, 0, 200);
-    gradientColor.addColorStop(0, '#DA22FF');
-    gradientColor.addColorStop(1, '#9733EE');
+    const gradientColor = domCanvasAccess
+      .getContext('2d')
+      .createLinearGradient(0, 0, 0, 200);
 
-    this.wrapperChartColors[0] = {
-        backgroundColor: gradientColor,
-        // borderColor: ...
-        // hoverBorderColor: ...
-    }
+    let startStopColors = generateGradient()
+    gradientColor.addColorStop(0, startStopColors.start);
+    gradientColor.addColorStop(1, startStopColors.stop);
+
+    this.wrapperChartData.forEach((data, idx) => {
+      // if (this.wrapperChartData.length > 1) {
+      // }
+      if (this.wrapperChartData.length == 1) {
+        this.wrapperChartColors[0] == { backgroundColor: gradientColor };
+
+        console.log(this.wrapperChartColors[0])
+      }
+    });
   }
 
   checkTypeCondition(data: Array<any>) {

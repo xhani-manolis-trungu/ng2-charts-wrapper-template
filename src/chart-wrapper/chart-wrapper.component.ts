@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ChartOptions, ChartType, ChartDataSets, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
 
 const getDates = (startDate, endDate) => {
@@ -27,7 +27,9 @@ export class ChartWrapperComponent {
   private labels: Array<string> = [];
   private type: string = 'bar';
   private DSLabels: string | string[] = null;
-  private options: ChartOptions = {};
+  private options: ChartOptions = null;
+
+  @ViewChild("myCanvas") canvas: ElementRef;
 
   @Input('datasetLabels') set dataSetLabelsInput(DSLabels: string | string[]) {
     // Way 1 of checking if object is array
@@ -54,40 +56,90 @@ export class ChartWrapperComponent {
     this.options = { ...options };
   }
 
-  public barChartOptions: ChartOptions;
-  public barChartLabels: Label[] = [];
-  public barChartType: ChartType = 'bar';
-  public barChartLegend = true;
-  public barChartPlugins = [];
+  public wrapperChartOptions: ChartOptions = {
+    responsive: true,
+    tooltips: {
+      intersect: false,
+      mode: 'x'
+    },
+    scales: {
+      xAxes: [
+        {
+          stacked: true,
+          gridLines: {
+            display: false
+          }
+        }
+      ],
+      yAxes: [
+        {
+          stacked: true,
+          gridLines: {
+            display: false
+          }
+        }
+      ]
+    }
+  };
+  public wrapperChartLabels: Label[] = [];
+  public wrapperChartType: ChartType = 'bar';
+  public wrapperChartLegend = true;
+  public wrapperChartPlugins = [];
+  public wrapperChartColors: ChartColor = [];
 
-  public barChartData: ChartDataSets[] = [{ data: [], label: '' }];
+  public wrapperChartData: ChartDataSets[] = [{ data: [], label: '' }];
 
   constructor() {}
 
   ngOnInit() {
-    this.barChartOptions = { ...this.options };
-    this.barChartType = this.type;
-    this.barChartLabels = [...this.labels];
+    console.log(this.options);
+    this.wrapperChartOptions =
+      this.options != null ? { ...this.options } : this.wrapperChartOptions;
+    this.wrapperChartType = this.type;
+    this.wrapperChartLabels = [...this.labels];
+  }
+
+  ngAfterViewInit() {
+    const domCanvasAccess = this.canvas.nativeElement as HTMLCanvasElement;
+    const gradientColor = domCanvasAccess.getContext('2d').createLinearGradient(0, 0, 0, 200);
+    gradientColor.addColorStop(0, '#DA22FF');
+    gradientColor.addColorStop(1, '#9733EE');
+
+    this.wrapperChartColors[0] = {
+        backgroundColor: gradientColor,
+        // borderColor: ...
+        // hoverBorderColor: ...
+    }
   }
 
   checkTypeCondition(data: Array<any>) {
-    return data.every(item => Array.isArray(item) && (typeof item !== 'number') || Array.isArray(item) && (typeof item !== 'string'))
+    return data.every(
+      item =>
+        (Array.isArray(item) && typeof item !== 'number') ||
+        (Array.isArray(item) && typeof item !== 'string')
+    );
   }
 
   createBarChartData(data: Array<any>) {
     if (this.checkTypeCondition(data)) {
       data.forEach((item, idx) => {
-        if (idx < data.length - 1) {
-          if (this.barChartData.length !== data.length) {
-            this.barChartData.push({ data: [], label: '' });
-          }
+        // if (idx < data.length - 1) {
+        //   if (this.wrapperChartData.length !== data.length) {
+        //     this.wrapperChartData.push({ data: [], label: '' });
+        //   }
+        // }
+        if (
+          idx < data.length - 1 &&
+          this.wrapperChartData.length !== data.length
+        ) {
+          this.wrapperChartData.push({ data: [], label: '' });
         }
         this.data = [...item];
-        this.barChartData[idx]['data'] = [...this.data];
+        this.wrapperChartData[idx]['data'] = [...this.data];
       });
     } else {
       this.data = data;
-      this.barChartData[0]['data'] = [...this.data];
+      this.wrapperChartData[0]['data'] = [...this.data];
     }
   }
 
@@ -97,13 +149,13 @@ export class ChartWrapperComponent {
 
       DSLabels.forEach((label, idx) => {
         if (idx < DSLabels.length - 1) {
-          this.barChartData.push({ data: [], label: '' });
+          this.wrapperChartData.push({ data: [], label: '' });
         }
-        this.barChartData[idx]['label'] = label;
+        this.wrapperChartData[idx]['label'] = label;
       });
     } else {
       this.DSLabels = DSLabels;
-      this.barChartData[0]['label'] = this.DSLabels;
+      this.wrapperChartData[0]['label'] = this.DSLabels;
     }
   }
 }

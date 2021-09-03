@@ -1,5 +1,5 @@
 <div style="display: block;">
-  <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-    [plugins]="barChartPlugins" [legend]="barChartLegend" [chartType]="barChartType">
+  <canvas #myCanvas baseChart [datasets]="wrapperChartData" [labels]="wrapperChartLabels" [options]="wrapperChartOptions" [colors]="wrapperChartColors"
+    [plugins]="wrapperChartPlugins" [legend]="wrapperChartLegend" [chartType]="wrapperChartType">
   </canvas>
 </div>

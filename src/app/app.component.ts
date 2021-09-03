@@ -9,10 +9,16 @@ import { ChartOptions } from 'chart.js';
 export class AppComponent {
   public chartOptions: ChartOptions = {
     responsive: true,
+    tooltips: {
+      intersect: false,
+      mode: 'x'
+    },
     scales: {
       xAxes: [
         {
-          grid: {display: false},
+          gridLines: {
+            display: false
+          },
           display: true,
           type: 'time',
           time: {
@@ -24,27 +30,29 @@ export class AppComponent {
             }
           },
           ticks: {
-            major: {endabled: true},
+            major: { endabled: true },
             callback: function(value, index, values) {
               if (index % 2 === 0) {
-                return value
-              } 
-            },
+                return value;
+              }
+            }
           }
         }
       ],
       yAxes: [
         {
-          grid: {display: false, borderWidth: 0},
+          gridLines: {
+            display: false
+          },
           display: true,
           ticks: {
             callback: function(value, index, values) {
               return index % 2 ? value : null;
-            },
+            }
           }
         }
       ]
-    },
+    }
   };
   constructor() {}
 

@@ -66,7 +66,7 @@ export class ChartWrapperComponent {
     scales: {
       xAxes: [
         {
-          stacked: true,
+          stacked: false,
           gridLines: {
             display: false
           }
@@ -74,7 +74,7 @@ export class ChartWrapperComponent {
       ],
       yAxes: [
         {
-          stacked: true,
+          stacked: false,
           gridLines: {
             display: false
           }
